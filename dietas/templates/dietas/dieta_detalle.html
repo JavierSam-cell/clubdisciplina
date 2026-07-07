@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% block titulo %}{{ dieta.nombre }}{% endblock %}
+{% block contenido %}
+
+<div class="tarjeta">
+    <h1>{{ dieta.nombre }}</h1>
+    <span class="chip">{{ dieta.get_categoria_display }}</span>
+    <span class="chip">{{ dieta.get_objetivo_display }}</span>
+    <span class="chip">{{ dieta.get_preferencia_display }}</span>
+    <span class="chip">{{ dieta.get_presupuesto_display }}</span>
+    <span class="chip">{{ dieta.comidas_por_dia }} comidas/día</span>
+    {% if dieta.calorias_aproximadas %}<span class="chip">~{{ dieta.calorias_aproximadas }} kcal/día</span>{% endif %}
+    {% if dieta.descripcion %}<p>{{ dieta.descripcion }}</p>{% endif %}
+</div>
+
+{% for item in comidas %}
+<div class="tarjeta">
+    <h3 style="margin-bottom:4px;">{{ item.comida.get_momento_sugerido_display }}: {{ item.comida.nombre }}</h3>
+    {% if item.comida.calorias_aprox %}
+    <p style="color:#555; margin:0 0 8px;">~{{ item.comida.calorias_aprox }} kcal</p>
+    {% endif %}
+    <p><strong>Ingredientes:</strong><br>{{ item.comida.ingredientes|linebreaksbr }}</p>
+    {% if item.comida.preparacion %}
+    <p><strong>Preparación:</strong><br>{{ item.comida.preparacion|linebreaksbr }}</p>
+    {% endif %}
+</div>
+{% empty %}
+<div class="tarjeta"><p style="color:#555;">Esta dieta todavía no tiene un menú cargado.</p></div>
+{% endfor %}
+
+<a class="boton secundario" href="{% url 'dietas:dietas_lista' %}">← Volver a dietas</a>
+
+{% endblock %}

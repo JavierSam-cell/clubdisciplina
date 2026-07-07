@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block titulo %}{{ rutina.nombre }}{% endblock %}
+{% block contenido %}
+
+<div class="tarjeta">
+    <h1>{{ rutina.nombre }}</h1>
+    <span class="chip">{{ rutina.get_categoria_display }}</span>
+    <span class="chip">{{ rutina.get_lugar_display }}</span>
+    <span class="chip">{{ rutina.get_nivel_display }}</span>
+    <span class="chip">{{ rutina.get_equipo_display }}</span>
+    <span class="chip">{{ rutina.minutos_duracion }} min</span>
+    {% if rutina.descripcion %}<p>{{ rutina.descripcion }}</p>{% endif %}
+</div>
+
+{% for paso in pasos %}
+<div class="tarjeta">
+    <h3 style="margin-bottom:4px;">{{ forloop.counter }}. {{ paso.ejercicio.nombre }}</h3>
+    <p style="color:#555; margin:0 0 8px;">
+        {{ paso.series }} series x {{ paso.repeticiones }} · descanso {{ paso.descanso_segundos }}s
+    </p>
+    <p>{{ paso.ejercicio.descripcion_tecnica }}</p>
+    {% if paso.ejercicio.video_url %}
+    <a class="boton secundario pequeno" href="{{ paso.ejercicio.video_url }}" target="_blank" rel="noopener">▶ Ver técnica en video</a>
+    {% endif %}
+</div>
+{% empty %}
+<div class="tarjeta"><p style="color:#555;">Esta rutina todavía no tiene ejercicios cargados.</p></div>
+{% endfor %}
+
+<a class="boton secundario" href="{% url 'rutinas:rutinas_lista' %}">← Volver a rutinas</a>
+
+{% endblock %}

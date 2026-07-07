@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% block titulo %}Nueva rutina{% endblock %}
+{% block contenido %}
+
+<div class="tarjeta">
+    <h1>Nueva rutina</h1>
+    <p style="color:#555;">Como administrador, la rutina que crees aquí quedará visible de inmediato para toda la comunidad.</p>
+
+    <form method="post">
+        {% csrf_token %}
+
+        <h3>Datos de la rutina</h3>
+        {% for campo in form %}
+        <p>
+            <label>{{ campo.label }}</label>
+            {{ campo }}
+            {% if campo.help_text %}<div class="ayuda-campo">{{ campo.help_text }}</div>{% endif %}
+            {{ campo.errors }}
+        </p>
+        {% endfor %}
+
+        <h3>Ejercicios de la rutina</h3>
+        <p style="color:#555; margin-top:-6px;">Agrégalos en el orden en que se deben hacer. Deja vacías las filas que no uses.</p>
+        {{ formset.management_form }}
+        {% for f in formset %}
+        <div class="tarjeta" style="background:var(--gris-claro); padding:14px; margin-bottom:10px;">
+            {% for hidden in f.hidden_fields %}{{ hidden }}{% endfor %}
+            <div class="grid-2">
+                <p><label>Ejercicio</label>{{ f.ejercicio }}{{ f.ejercicio.errors }}</p>
+                <p><label>Orden</label>{{ f.orden }}{{ f.orden.errors }}</p>
+            </div>
+            <div class="grid-2">
+                <p><label>Series</label>{{ f.series }}{{ f.series.errors }}</p>
+                <p><label>Repeticiones</label>{{ f.repeticiones }}{{ f.repeticiones.errors }}</p>
+            </div>
+            <p><label>Descanso (segundos)</label>{{ f.descanso_segundos }}{{ f.descanso_segundos.errors }}</p>
+            {% if f.instance.pk %}
+            <p>{{ f.DELETE }} <label style="display:inline; font-weight:400;">Eliminar este ejercicio</label></p>
+            {% endif %}
+        </div>
+        {% endfor %}
+
+        <button class="boton" type="submit">Guardar rutina</button>
+        <a class="boton secundario" href="{% url 'rutinas:rutinas_lista' %}">Cancelar</a>
+    </form>
+</div>
+
+{% endblock %}

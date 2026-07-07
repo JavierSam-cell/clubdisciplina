@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% block titulo %}Biblioteca de técnica{% endblock %}
+{% block contenido %}
+
+<h1>📚 Biblioteca de técnica</h1>
+
+<div style="margin-bottom:14px;">
+    <a class="chip {% if not grupo_activo %}activo{% endif %}" href="{% url 'rutinas:biblioteca' %}">Todos</a>
+    {% for valor, etiqueta in grupos %}
+    <a class="chip {% if grupo_activo == valor %}activo{% endif %}" href="?grupo={{ valor }}">{{ etiqueta }}</a>
+    {% endfor %}
+</div>
+
+{% for e in ejercicios %}
+<div class="tarjeta">
+    <h3 style="margin-bottom:4px;">{{ e.nombre }}</h3>
+    <span class="chip">{{ e.get_grupo_muscular_display }}</span>
+    <p>{{ e.descripcion_tecnica }}</p>
+    {% if e.video_url %}
+    <a class="boton secundario pequeno" href="{{ e.video_url }}" target="_blank" rel="noopener">▶ Ver video</a>
+    {% endif %}
+</div>
+{% empty %}
+<p style="color:#555;">No hay ejercicios en esta categoría todavía.</p>
+{% endfor %}
+
+{% endblock %}

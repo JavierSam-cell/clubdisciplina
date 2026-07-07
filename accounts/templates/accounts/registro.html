@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% block titulo %}Únete al club{% endblock %}
+{% block contenido %}
+
+<div class="tarjeta">
+    <h1>Antes de entrar</h1>
+    <p style="color:#555;">Esto nos sirve para personalizar tus rutinas, tu alimentación y tus mensajes. Toma dos minutos.</p>
+
+    <form method="post">
+        {% csrf_token %}
+
+        <h3>Tu cuenta</h3>
+        <div class="grid-2">
+            <p><label>Usuario</label>{{ form.username }}{{ form.username.errors }}</p>
+            <p><label>Correo</label>{{ form.email }}{{ form.email.errors }}</p>
+        </div>
+        <div class="grid-2">
+            <p><label>Contraseña</label>{{ form.password1 }}{{ form.password1.errors }}</p>
+            <p><label>Confirmar contraseña</label>{{ form.password2 }}{{ form.password2.errors }}</p>
+        </div>
+
+        <h3>Sobre ti</h3>
+        <p><label>{{ form.nombre_para_mostrar.label }}</label>{{ form.nombre_para_mostrar }}{{ form.nombre_para_mostrar.errors }}</p>
+        <div class="grid-2">
+            <p><label>{{ form.edad.label }}</label>{{ form.edad }}{{ form.edad.errors }}</p>
+            <p><label>{{ form.estatura_cm.label }}</label>{{ form.estatura_cm }}{{ form.estatura_cm.errors }}</p>
+        </div>
+        <div class="grid-2">
+            <p><label>{{ form.peso_inicial_kg.label }}</label>{{ form.peso_inicial_kg }}{{ form.peso_inicial_kg.errors }}</p>
+            <p><label>{{ form.cintura_inicial_cm.label }}</label>{{ form.cintura_inicial_cm }}{{ form.cintura_inicial_cm.errors }}</p>
+        </div>
+
+        <h3>Tu objetivo y disponibilidad</h3>
+        <p><label>{{ form.objetivo.label }}</label>{{ form.objetivo }}</p>
+        <div class="grid-2">
+            <p><label>{{ form.lugar_entreno.label }}</label>{{ form.lugar_entreno }}</p>
+            <p><label>{{ form.nivel.label }}</label>{{ form.nivel }}</p>
+        </div>
+        <div class="grid-2">
+            <p><label>{{ form.minutos_disponibles.label }}</label>{{ form.minutos_disponibles }}</p>
+            <p><label>{{ form.horario_preferido.label }}</label>{{ form.horario_preferido }}</p>
+        </div>
+        <p><label>Lesiones o limitaciones (opcional)</label>{{ form.lesiones }}</p>
+
+        <h3>Tu alimentación</h3>
+        <div class="grid-2">
+            <p><label>{{ form.preferencia_alimenticia.label }}</label>{{ form.preferencia_alimenticia }}</p>
+            <p><label>{{ form.presupuesto_comida.label }}</label>{{ form.presupuesto_comida }}</p>
+        </div>
+
+        <h3>¿Cómo prefieres que te hablemos?</h3>
+        <p>{{ form.tono_mensajes }}</p>
+
+        <button class="boton" type="submit" style="width:100%; margin-top:10px;">EMPEZAR MI COMPROMISO HOY</button>
+    </form>
+</div>
+
+{% endblock %}

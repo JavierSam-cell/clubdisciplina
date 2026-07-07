@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% block titulo %}Frases{% endblock %}
+{% block contenido %}
+
+<div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+    <h1 style="margin:0;">Banco de frases</h1>
+    <a class="boton" href="{% url 'community:frase_nueva' %}">+ Compartir una frase</a>
+</div>
+
+<div style="margin: 14px 0;">
+    <a class="chip {% if not momento_activo %}activo{% endif %}" href="{% url 'community:frases_lista' %}">Todas</a>
+    {% for valor, etiqueta in momentos %}
+    <a class="chip {% if momento_activo == valor %}activo{% endif %}" href="?momento={{ valor }}">{{ etiqueta }}</a>
+    {% endfor %}
+</div>
+
+{% for f in frases %}
+<div class="tarjeta">
+    <p style="font-size:1.05rem; font-weight:600; margin:0 0 6px;">“{{ f.texto }}”</p>
+    <span class="chip">{{ f.get_momento_display }}</span>
+    {% if f.origen == 'comunidad' %}
+        <span class="chip">Compartida por {{ f.compartida_por.nombre_para_mostrar|default:f.compartida_por.username }}</span>
+    {% endif %}
+</div>
+{% empty %}
+<p style="color:#555;">Todavía no hay frases en esta categoría.</p>
+{% endfor %}
+
+{% endblock %}

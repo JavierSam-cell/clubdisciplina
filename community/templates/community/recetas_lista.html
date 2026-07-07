@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% block titulo %}Recetas{% endblock %}
+{% block contenido %}
+
+<div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+    <h1 style="margin:0;">Recetas del club</h1>
+    <a class="boton" href="{% url 'community:receta_nueva' %}">+ Compartir mi receta</a>
+</div>
+
+<div style="margin: 14px 0;">
+    <a class="chip {% if not categoria_activa %}activo{% endif %}" href="{% url 'community:recetas_lista' %}">Todas</a>
+    {% for valor, etiqueta in categorias %}
+    <a class="chip {% if categoria_activa == valor %}activo{% endif %}" href="?categoria={{ valor }}">{{ etiqueta }}</a>
+    {% endfor %}
+</div>
+
+{% for r in recetas %}
+<div class="tarjeta">
+    <h3 style="margin-bottom:2px;">{{ r.titulo }}</h3>
+    <span class="chip">{{ r.get_categoria_display }}</span>
+    <p style="color:#555; font-size:0.85rem;">Por {{ r.autor.nombre_para_mostrar|default:r.autor.username }}</p>
+    {% if r.imagen %}<img src="{{ r.imagen.url }}" style="max-width:100%; border-radius:8px; margin-bottom:10px;">{% endif %}
+    <p><strong>Ingredientes:</strong><br>{{ r.ingredientes|linebreaksbr }}</p>
+    <p><strong>Preparación:</strong><br>{{ r.preparacion|linebreaksbr }}</p>
+    <form method="post" action="{% url 'community:receta_guardar' r.id %}">
+        {% csrf_token %}
+        <button class="boton secundario pequeno" type="submit">
+            {% if request.user in r.guardada_por.all %}★ Guardada en mis favoritas{% else %}☆ Guardar en mis favoritas{% endif %}
+        </button>
+    </form>
+</div>
+{% empty %}
+<p style="color:#555;">Todavía no hay recetas en esta categoría. ¡Sé la primera en compartir una!</p>
+{% endfor %}
+
+{% endblock %}

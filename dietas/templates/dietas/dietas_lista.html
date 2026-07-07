@@ -1,0 +1,226 @@
+{% extends 'base.html' %}
+{% block titulo %}Dietas{% endblock %}
+{% block contenido %}
+
+<style>
+    .dietas-header{
+        display:flex;
+        justify-content:space-between;
+        align-items:center;
+        flex-wrap:wrap;
+        gap:10px;
+        margin-bottom:6px;
+    }
+
+    /* --- Grid de dietas (clicables) --- */
+    .dietas-grid{
+        display:grid;
+        grid-template-columns:repeat(auto-fill, minmax(260px, 1fr));
+        gap:14px;
+        margin-top:14px;
+    }
+
+    .dieta-card{
+        display:flex;
+        flex-direction:column;
+        gap:10px;
+        padding:16px;
+        border:1px solid var(--borde);
+        border-radius:14px;
+        background:#fff;
+        text-decoration:none;
+        color:inherit;
+        position:relative;
+        cursor:pointer;
+        transition:transform .15s ease, box-shadow .15s ease, border-color .15s ease;
+        box-shadow:0 1px 2px rgba(0,0,0,0.04);
+    }
+
+    .dieta-card:hover,
+    .dieta-card:focus-visible{
+        transform:translateY(-3px);
+        box-shadow:0 10px 24px rgba(0,0,0,0.10);
+        border-color:#33a06f;
+    }
+
+    .dieta-card:active{
+        transform:translateY(-1px);
+    }
+
+    .dieta-card-top{
+        display:flex;
+        justify-content:space-between;
+        align-items:flex-start;
+        gap:10px;
+    }
+
+    .dieta-card h4{
+        margin:0;
+        font-size:1.05rem;
+        line-height:1.3;
+    }
+
+    .dieta-flecha{
+        flex-shrink:0;
+        width:28px;
+        height:28px;
+        border-radius:50%;
+        background:#eafaf1;
+        color:#1f8a54;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        font-size:1rem;
+        transition:transform .15s ease, background .15s ease;
+    }
+
+    .dieta-card:hover .dieta-flecha{
+        background:#1f8a54;
+        color:#fff;
+        transform:translateX(3px);
+    }
+
+    .dieta-chips{
+        display:flex;
+        flex-wrap:wrap;
+        gap:6px;
+    }
+
+    .dieta-cta{
+        margin-top:2px;
+        font-size:0.8rem;
+        font-weight:600;
+        color:#1f8a54;
+        display:flex;
+        align-items:center;
+        gap:4px;
+    }
+
+    /* --- Filtros --- */
+    .filtros-grupo{
+        display:flex;
+        flex-wrap:wrap;
+        gap:8px;
+        margin-bottom:12px;
+    }
+    .filtros-etiqueta{
+        font-size:0.8rem;
+        color:#777;
+        font-weight:600;
+        text-transform:uppercase;
+        letter-spacing:.03em;
+        margin-bottom:6px;
+    }
+
+    .vacio-estado{
+        text-align:center;
+        color:#777;
+        padding:30px 10px;
+    }
+</style>
+
+<div class="dietas-header">
+    <h1 style="margin:0;">Dietas</h1>
+    {% if request.user.is_staff %}
+    <a class="boton" href="{% url 'dietas:dieta_nueva' %}">+ Nueva dieta</a>
+    {% endif %}
+</div>
+
+<div class="tarjeta">
+    <h3>Recomendadas para ti</h3>
+    <p style="color:#555; margin-top:-6px;">Según tu perfil: {{ request.user.get_preferencia_alimenticia_display }} · {{ request.user.get_presupuesto_comida_display }} · {{ request.user.get_objetivo_display }}</p>
+
+    {% if recomendadas %}
+    <div class="dietas-grid">
+        {% for d in recomendadas %}
+        <a href="{% url 'dietas:dieta_detalle' d.id %}" class="dieta-card">
+            <div class="dieta-card-top">
+                <h4>{{ d.nombre }}</h4>
+                <span class="dieta-flecha">→</span>
+            </div>
+            <div class="dieta-chips">
+                <span class="chip">{{ d.get_categoria_display }}</span>
+                <span class="chip">🍽 {{ d.comidas_por_dia }} comidas/día</span>
+                {% if d.calorias_aproximadas %}<span class="chip">~{{ d.calorias_aproximadas }} kcal</span>{% endif %}
+            </div>
+            <span class="dieta-cta">Ver dieta →</span>
+        </a>
+        {% endfor %}
+    </div>
+    {% else %}
+    <p class="vacio-estado">Todavía no hay una dieta exacta para tu perfil. Explora el catálogo completo abajo.</p>
+    {% endif %}
+</div>
+
+<div class="tarjeta">
+    <h3>Explorar todo el catálogo</h3>
+
+    <div class="filtros-etiqueta">Categoría</div>
+    <div class="filtros-grupo">
+        <a class="chip {% if not categoria_activa %}activo{% endif %}" href="?categoria=&preferencia={{ preferencia_activa }}&presupuesto={{ presupuesto_activo }}">Todas las categorías</a>
+        {% for valor, etiqueta in categorias %}
+        <a class="chip {% if categoria_activa == valor %}activo{% endif %}" href="?categoria={{ valor }}&preferencia={{ preferencia_activa }}&presupuesto={{ presupuesto_activo }}">{{ etiqueta }}</a>
+        {% endfor %}
+    </div>
+
+    <div class="filtros-etiqueta">Preferencia</div>
+    <div class="filtros-grupo">
+        {% for valor, etiqueta in preferencias %}
+        <a class="chip {% if preferencia_activa == valor %}activo{% endif %}" href="?categoria={{ categoria_activa }}&preferencia={{ valor }}&presupuesto={{ presupuesto_activo }}">{{ etiqueta }}</a>
+        {% endfor %}
+    </div>
+
+    <div class="filtros-etiqueta">Presupuesto</div>
+    <div class="filtros-grupo" style="margin-bottom:4px;">
+        {% for valor, etiqueta in presupuestos %}
+        <a class="chip {% if presupuesto_activo == valor %}activo{% endif %}" href="?categoria={{ categoria_activa }}&preferencia={{ preferencia_activa }}&presupuesto={{ valor }}">{{ etiqueta }}</a>
+        {% endfor %}
+    </div>
+
+    {% if todas %}
+    <div class="dietas-grid">
+        {% for d in todas %}
+        <a href="{% url 'dietas:dieta_detalle' d.id %}" class="dieta-card">
+            <div class="dieta-card-top">
+                <h4>{{ d.nombre }}</h4>
+                <span class="dieta-flecha">→</span>
+            </div>
+            <div class="dieta-chips">
+                <span class="chip">{{ d.get_categoria_display }}</span>
+                <span class="chip">{{ d.get_preferencia_display }}</span>
+                <span class="chip">{{ d.get_presupuesto_display }}</span>
+            </div>
+            <span class="dieta-cta">Ver dieta →</span>
+        </a>
+        {% endfor %}
+    </div>
+    {% else %}
+    <p class="vacio-estado">No hay dietas con esos filtros.</p>
+    {% endif %}
+</div>
+
+<script>
+// SOLUCIÓN DEFINITIVA: Guardar y restaurar posición del scroll
+(function() {
+    // Guardar la posición actual cuando se hace clic en un filtro
+    document.addEventListener('click', function(e) {
+        const filtro = e.target.closest('.filtros-grupo a.chip');
+        if (filtro) {
+            // Guardar la posición actual del scroll
+            sessionStorage.setItem('scrollPos', window.scrollY);
+        }
+    });
+
+    // Restaurar la posición después de que la página se recargue
+    if (sessionStorage.getItem('scrollPos')) {
+        window.addEventListener('load', function() {
+            const pos = parseInt(sessionStorage.getItem('scrollPos')) || 0;
+            window.scrollTo(0, pos);
+            // Limpiar después de restaurar para no usarlo en futuras navegaciones
+            sessionStorage.removeItem('scrollPos');
+        });
+    }
+})();
+</script>
+
+{% endblock %}

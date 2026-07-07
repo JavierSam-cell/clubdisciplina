@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% block titulo %}Ranking{% endblock %}
+{% block contenido %}
+<div class="tarjeta">
+    <h1>🏆 Ranking de constancia</h1>
+    <p style="color:#555;">Aquí no se mide quién bajó más kilos. Se mide quién ha sido más constante.</p>
+    <table>
+        <tr><td>#</td><td>Nombre</td><td>Días seguidos</td><td>Puntos</td></tr>
+        {% for fila in tabla %}
+        <tr {% if fila.usuario == request.user %}style="background:#fef4ee;"{% endif %}>
+            <td>{{ forloop.counter }}</td>
+            <td>{{ fila.usuario.nombre_para_mostrar|default:fila.usuario.username }}</td>
+            <td>{{ fila.racha }}</td>
+            <td>⭐ {{ fila.puntos }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+{% endblock %}

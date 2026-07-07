@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block titulo %}Entrar{% endblock %}
+{% block contenido %}
+<div class="tarjeta" style="max-width:400px; margin:0 auto;">
+    <h1>Bienvenida de vuelta</h1>
+    <form method="post">
+        {% csrf_token %}
+        <p><label>Usuario</label>{{ form.username }}</p>
+        <p><label>Contraseña</label>{{ form.password }}</p>
+        {% if form.errors %}
+            <p style="color:#c0392b;">Usuario o contraseña incorrectos.</p>
+        {% endif %}
+        <button class="boton" type="submit" style="width:100%;">Entrar</button>
+    </form>
+    <p style="margin-top:14px;">¿Aún no eres parte del club? <a href="{% url 'accounts:registro' %}" style="color:var(--acento); font-weight:600;">Únete aquí</a></p>
+</div>
+{% endblock %}

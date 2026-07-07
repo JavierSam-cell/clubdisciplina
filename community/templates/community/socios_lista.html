@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% block titulo %}Socios{% endblock %}
+{% block contenido %}
+
+<h1 style="margin:0 0 14px;">Socios del club</h1>
+
+<div class="tarjeta">
+    <table>
+        <tr>
+            <td>Nombre</td>
+            <td>Usuario</td>
+            <td>Correo</td>
+            <td>Estado</td>
+            <td>Acciones</td>
+        </tr>
+        {% for socio in socios %}
+        <tr>
+            <td>{{ socio.nombre_para_mostrar|default:"—" }}</td>
+            <td>{{ socio.username }}</td>
+            <td>{{ socio.email|default:"—" }}</td>
+            <td>
+                {% if not socio.is_active %}
+                    <span class="chip" style="background:#fde8e6; color:#a12e21;">Baneado</span>
+                {% elif socio.is_staff %}
+                    <span class="chip activo">Administrador</span>
+                {% else %}
+                    <span class="chip" style="background:#e4f7ea; color:#1f6b3a;">Activo</span>
+                {% endif %}
+            </td>
+            <td style="white-space:nowrap;">
+                {% if socio != request.user %}
+                <form method="post" action="{% url 'community:socio_banear' socio.id %}" style="display:inline;">
+                    {% csrf_token %}
+                    <button class="boton secundario pequeno" type="submit">
+                        {% if socio.is_active %}Banear{% else %}Reactivar{% endif %}
+                    </button>
+                </form>
+                <a class="boton pequeno" style="background:#a12e21;" href="{% url 'community:socio_eliminar' socio.id %}">Eliminar</a>
+                {% else %}
+                <span style="color:var(--gris); font-size:0.85rem;">(tú)</span>
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+
+{% endblock %}

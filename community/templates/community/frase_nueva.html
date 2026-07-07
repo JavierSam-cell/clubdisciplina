@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block titulo %}Compartir frase{% endblock %}
+{% block contenido %}
+<div class="tarjeta">
+    <h1>Comparte una frase</h1>
+    <p style="color:#555;">Se revisará antes de mostrarse a todo el club.</p>
+    <form method="post">
+        {% csrf_token %}
+        {% for campo in form %}
+        <p><label>{{ campo.label }}</label>{{ campo }}{{ campo.errors }}</p>
+        {% endfor %}
+        <button class="boton" type="submit" style="width:100%;">Enviar frase</button>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% block titulo %}Eliminar socio{% endblock %}
+{% block contenido %}
+
+<div class="tarjeta">
+    <h1>¿Eliminar a {{ socio.nombre_para_mostrar|default:socio.username }}?</h1>
+    <p style="color:#555;">
+        Esta acción es permanente: se borrará su cuenta y no podrá recuperarse.
+        Si solo quieres impedirle el acceso sin perder su historial, usa mejor la opción "Banear".
+    </p>
+
+    <form method="post">
+        {% csrf_token %}
+        <button class="boton" style="background:#a12e21;" type="submit">Sí, eliminar definitivamente</button>
+        <a class="boton secundario" href="{% url 'community:socios_lista' %}">Cancelar</a>
+    </form>
+</div>
+
+{% endblock %}

@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% block titulo %}Mi compañera{% endblock %}
+{% block contenido %}
+<div class="tarjeta">
+    <h1>🤝 Mi compañera de compromiso</h1>
+
+    {% if companera %}
+        <p>Estás emparejada con <strong>{{ companera.nombre_para_mostrar|default:companera.username }}</strong> desde el {{ pareja.fecha_emparejamiento }}.</p>
+
+        <div style="border-top:1px solid var(--borde); padding-top:12px; margin-top:12px;">
+            {% for msg in mensajes %}
+            <p style="margin:4px 0;">
+                <strong>{{ msg.remitente.nombre_para_mostrar|default:msg.remitente.username }}:</strong> {{ msg.texto }}
+            </p>
+            {% empty %}
+            <p style="color:#555;">Todavía no se han escrito. ¡Manda el primer mensaje de ánimo!</p>
+            {% endfor %}
+        </div>
+
+        <form method="post" style="margin-top:14px;">
+            {% csrf_token %}
+            <input type="hidden" name="accion" value="mensaje">
+            <p><input type="text" name="texto" placeholder="Escríbele un mensaje de ánimo..." required></p>
+            <button class="boton" type="submit">Enviar</button>
+        </form>
+    {% else %}
+        <p style="color:#555;">Todavía no tienes una compañera asignada.</p>
+        <p style="color:#555;">
+            Buscamos primero a alguien con tu mismo horario para entrenar
+            (<strong>{{ request.user.get_horario_preferido_display }}</strong>) y tu mismo objetivo;
+            si no hay nadie así, te emparejamos con la mejor coincidencia disponible.
+        </p>
+        <form method="post">
+            {% csrf_token %}
+            <input type="hidden" name="accion" value="buscar">
+            <button class="boton" type="submit">🔍 Buscar compañera ahora</button>
+        </form>
+    {% endif %}
+</div>
+{% endblock %}

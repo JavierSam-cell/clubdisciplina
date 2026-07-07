@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+{% block titulo %}Mi dashboard{% endblock %}
+{% block contenido %}
+
+<h1>Buenos días, {{ usuario.nombre_para_mostrar }}.</h1>
+<p style="color:#555; margin-top:-8px;">Día {{ dias_de_compromiso }} de tu compromiso.</p>
+
+{% if mensaje_del_dia %}
+<p style="font-weight:600; margin-top:0;">{{ mensaje_del_dia }}</p>
+{% endif %}
+
+{% if frase %}
+<div class="frase-destacada">
+    “{{ frase.texto }}”
+    {% if frase.origen == 'comunidad' %}
+    <div style="font-size:0.8rem; font-weight:400; opacity:0.7; margin-top:6px;">
+        — compartida por {{ frase.compartida_por.nombre_para_mostrar|default:"una compañera del club" }}
+    </div>
+    {% endif %}
+</div>
+{% endif %}
+
+<div class="tarjeta" style="text-align:center;">
+    {% if racha_actual > 0 %}
+        <span class="racha-badge">🔥 {{ racha_actual }} día{{ racha_actual|pluralize }} seguidos</span>
+        <p style="margin-top:10px; font-weight:700;">NO ROMPAS LA CADENA.</p>
+    {% else %}
+        <span class="racha-badge" style="background:#6b7280;">Hoy puedes empezar tu racha</span>
+    {% endif %}
+    <p style="margin-top:10px;"><span class="chip">⭐ {{ puntos_totales_historicos }} puntos acumulados</span></p>
+
+    {% if registro_hoy %}
+        <p style="color:#1f9d55; font-weight:600; margin-top:12px;">✔ Ya registraste tu día de hoy.</p>
+    {% else %}
+        <a class="boton" style="margin-top:14px;" href="{% url 'tracking:check_in' %}">Registrar mi día de hoy</a>
+    {% endif %}
+</div>
+
+<div class="grid-3">
+    <div class="metrica">
+        <div class="valor">{{ usuario.peso_inicial_kg|default:"—" }} kg</div>
+        <div class="etiqueta">Peso inicial</div>
+    </div>
+    <div class="metrica">
+        <div class="valor">{{ usuario.cintura_inicial_cm|default:"—" }} cm</div>
+        <div class="etiqueta">Cintura inicial</div>
+    </div>
+    <div class="metrica">
+        <div class="valor">{{ dias_totales_entrenados }}</div>
+        <div class="etiqueta">Días entrenados en total</div>
+    </div>
+</div>
+
+{% if reto_activo %}
+<div class="tarjeta">
+    <h3>🎯 Tus retos de la semana</h3>
+    <p style="color:#555; margin-top:-6px;">
+        {{ puntos_ganados_semana }} / {{ puntos_totales_semana }} puntos esta semana
+    </p>
+    {% for fila in items_reto %}
+    <div style="display:flex; align-items:center; justify-content:space-between; padding:8px 0; border-bottom:1px solid #eee;">
+        <span>
+            {% if fila.completado %}✅{% else %}⬜{% endif %}
+            {{ fila.item.texto }}
+            <span style="color:#888; font-size:0.85rem;">({{ fila.item.puntos }} pts)</span>
+        </span>
+        {% if not fila.completado %}
+        <form method="post" action="{% url 'community:marcar_item_completado' fila.item.id %}" style="margin:0;">
+            {% csrf_token %}
+            <button class="boton secundario" type="submit">Completar</button>
+        </form>
+        {% endif %}
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+{% if medallas_recientes %}
+<div class="tarjeta">
+    <h3>Tus medallas más recientes</h3>
+    {% for m in medallas_recientes %}
+        <span class="chip">{{ m.medalla.icono }} {{ m.medalla.nombre }}</span>
+    {% endfor %}
+</div>
+{% endif %}
+
+<div class="grid-2">
+    <a class="tarjeta" href="{% url 'community:ranking' %}" style="display:block;">
+        <h3>🏆 Ver el ranking de constancia</h3>
+        <p style="margin:0; color:#555;">Se mide por días seguidos, no por kilos.</p>
+    </a>
+    <a class="tarjeta" href="{% url 'community:mi_companera' %}" style="display:block;">
+        <h3>🤝 Mi compañera de compromiso</h3>
+        <p style="margin:0; color:#555;">Anímense mutuamente esta semana.</p>
+    </a>
+    <a class="tarjeta" href="{% url 'tracking:fotos_progreso' %}" style="display:block;">
+        <h3>📷 Fotos de progreso</h3>
+        <p style="margin:0; color:#555;">Sube tu foto de hoy y compara tu antes/después.</p>
+    </a>
+    <a class="tarjeta" href="{% url 'dietas:dietas_lista' %}" style="display:block;">
+        <h3>🥗 Ver mis dietas recomendadas</h3>
+        <p style="margin:0; color:#555;">Filtradas según tu perfil y objetivo.</p>
+    </a>
+</div>
+
+{% endblock %}

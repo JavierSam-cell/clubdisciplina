@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+{% block titulo %}Comparación de progreso{% endblock %}
+{% block contenido %}
+
+<h1>Antes / Después</h1>
+<p style="color:#555; margin-top:-6px;">Elige qué dos fotos comparar. Por default mostramos la primera y la más reciente.</p>
+
+{% if fotos.count < 2 %}
+<div class="tarjeta">
+    <p style="color:#555;">Necesitas al menos 2 fotos para poder comparar. Sube otra en tu galería.</p>
+    <a class="boton secundario" href="{% url 'tracking:fotos_progreso' %}">← Ir a mis fotos</a>
+</div>
+{% else %}
+
+<div class="tarjeta">
+    <form method="get">
+        <div class="grid-2">
+            <p>
+                <label>Antes</label>
+                <select name="antes" onchange="this.form.submit()">
+                    {% for f in fotos %}
+                    <option value="{{ f.id }}" {% if foto_antes.id == f.id %}selected{% endif %}>{{ f.fecha }}{% if f.nota %} — {{ f.nota }}{% endif %}</option>
+                    {% endfor %}
+                </select>
+            </p>
+            <p>
+                <label>Después</label>
+                <select name="despues" onchange="this.form.submit()">
+                    {% for f in fotos %}
+                    <option value="{{ f.id }}" {% if foto_despues.id == f.id %}selected{% endif %}>{{ f.fecha }}{% if f.nota %} — {{ f.nota }}{% endif %}</option>
+                    {% endfor %}
+                </select>
+            </p>
+        </div>
+    </form>
+</div>
+
+<div class="tarjeta">
+    <div class="grid-2">
+        <div style="text-align:center;">
+            <span class="chip">ANTES · {{ foto_antes.fecha }}</span>
+            <img src="{{ foto_antes.imagen.url }}" alt="Foto antes"
+                 style="width:100%; aspect-ratio:3/4; object-fit:cover; border-radius:10px; border:1px solid var(--borde); margin-top:8px;">
+            {% if foto_antes.nota %}<p style="color:#555; font-size:0.85rem; margin-top:6px;">{{ foto_antes.nota }}</p>{% endif %}
+        </div>
+        <div style="text-align:center;">
+            <span class="chip" style="background:var(--negro); color:var(--blanco);">DESPUÉS · {{ foto_despues.fecha }}</span>
+            <img src="{{ foto_despues.imagen.url }}" alt="Foto después"
+                 style="width:100%; aspect-ratio:3/4; object-fit:cover; border-radius:10px; border:1px solid var(--borde); margin-top:8px;">
+            {% if foto_despues.nota %}<p style="color:#555; font-size:0.85rem; margin-top:6px;">{{ foto_despues.nota }}</p>{% endif %}
+        </div>
+    </div>
+
+    {% if foto_antes.fecha and foto_despues.fecha %}
+    <p style="text-align:center; margin-top:14px; color:#555;">
+        {{ foto_despues.fecha|timesince:foto_antes.fecha }} de diferencia entre ambas fotos.
+    </p>
+    {% endif %}
+</div>
+
+{% endif %}
+
+<a class="boton secundario" href="{% url 'tracking:fotos_progreso' %}">← Volver a mis fotos</a>
+
+{% endblock %}

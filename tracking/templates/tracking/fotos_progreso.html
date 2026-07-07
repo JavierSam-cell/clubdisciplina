@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% block titulo %}Fotos de progreso{% endblock %}
+{% block contenido %}
+
+<div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+    <h1 style="margin:0;">📷 Fotos de progreso</h1>
+    {% if fotos.count > 1 %}
+    <a class="boton secundario" href="{% url 'tracking:comparacion_progreso' %}">Ver comparación antes/después</a>
+    {% endif %}
+</div>
+<p style="color:#555; margin-top:-6px;">Son privadas: solo tú puedes verlas.</p>
+
+<div class="tarjeta">
+    <h3>Subir una foto nueva</h3>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {% for campo in form %}
+        <p>
+            <label>{{ campo.label }}</label>
+            {{ campo }}
+            {% if campo.help_text %}<div class="ayuda-campo">{{ campo.help_text }}</div>{% endif %}
+            {{ campo.errors }}
+        </p>
+        {% endfor %}
+        <button class="boton" type="submit">Guardar foto</button>
+    </form>
+</div>
+
+<div class="tarjeta">
+    <h3>Tu historial</h3>
+    {% if fotos %}
+    <div class="grid-3">
+        {% for f in fotos %}
+        <div style="text-align:center;">
+            <img src="{{ f.imagen.url }}" alt="Foto de progreso del {{ f.fecha }}"
+                 style="width:100%; aspect-ratio:3/4; object-fit:cover; border-radius:10px; border:1px solid var(--borde);">
+            <p style="margin:6px 0 0; font-size:0.85rem; font-weight:600;">{{ f.fecha }}</p>
+            {% if f.nota %}<p style="margin:0; font-size:0.8rem; color:#555;">{{ f.nota }}</p>{% endif %}
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <p style="color:#555;">Todavía no has subido ninguna foto. Empieza hoy: dentro de unas semanas vas a agradecerlo.</p>
+    {% endif %}
+</div>
+
+{% endblock %}

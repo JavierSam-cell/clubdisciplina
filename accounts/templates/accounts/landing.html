@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% block titulo %}Proyecto Disciplina{% endblock %}
+{% block contenido %}
+
+<div class="tarjeta" style="text-align:center; padding: 40px 24px;">
+    <h1 style="font-size:2rem;">No prometemos bajar 10 kilos en un mes.</h1>
+    <p style="font-size:1.15rem; color:#333;">
+        Prometemos ayudarte a convertirte en una persona disciplinada.<br>
+        <strong>El peso será una consecuencia.</strong>
+    </p>
+    <a class="boton" style="font-size:1.1rem; padding: 16px 32px; margin-top: 14px;" href="{% url 'accounts:registro' %}">
+        QUIERO CAMBIAR MI VIDA
+    </a>
+</div>
+
+<div class="grid-3">
+    <div class="tarjeta">
+        <h3>No es una dieta</h3>
+        <p>Es un sistema para no volver a abandonar. Rutinas, alimentación y una comunidad que no te deja sola.</p>
+    </div>
+    <div class="tarjeta">
+        <h3>No compites contra nadie</h3>
+        <p>El ranking del club mide constancia, no kilos. Ganas por seguir, no por ser la más delgada.</p>
+    </div>
+    <div class="tarjeta">
+        <h3>Empiezas hoy, no en enero</h3>
+        <p>El día 1 de tu compromiso es hoy. Nada de "la próxima semana" o "el próximo año".</p>
+    </div>
+</div>
+
+<div class="tarjeta" style="text-align:center;">
+    <p style="margin:0;">¿Ya eres parte del club?</p>
+    <a class="boton secundario" href="{% url 'accounts:login' %}">Entrar a mi cuenta</a>
+</div>
+
+{% endblock %}

@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block titulo %}Registrar mi día{% endblock %}
+{% block contenido %}
+<div class="tarjeta">
+    <h1>¿Cómo te fue hoy?</h1>
+    <form method="post">
+        {% csrf_token %}
+        {% for campo in form %}
+        <p>
+            <label>{{ campo.label }}</label>
+            {{ campo }}
+            {{ campo.errors }}
+        </p>
+        {% endfor %}
+        <button class="boton" type="submit" style="width:100%;">Guardar mi registro de hoy</button>
+    </form>
+</div>
+{% endblock %}

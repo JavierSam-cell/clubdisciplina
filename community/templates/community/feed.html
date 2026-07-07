@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% block titulo %}Comunidad{% endblock %}
+{% block contenido %}
+
+<div class="tarjeta">
+    <h3>Comparte algo con el club</h3>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <p><label>{{ form.tipo.label }}</label>{{ form.tipo }}</p>
+        <p>{{ form.texto }}</p>
+        <p><label>Foto (opcional)</label>{{ form.imagen }}</p>
+        <button class="boton" type="submit">Publicar</button>
+    </form>
+</div>
+
+{% for post in posts %}
+<div class="tarjeta">
+    <strong>{{ post.usuario.nombre_para_mostrar|default:post.usuario.username }}</strong>
+    <span class="chip">{{ post.get_tipo_display }}</span>
+    <p>{{ post.texto }}</p>
+    {% if post.imagen %}<img src="{{ post.imagen.url }}" style="max-width:100%; border-radius:8px;">{% endif %}
+
+    <form method="post" action="{% url 'community:reaccionar' post.id %}" style="margin-top:8px;">
+        {% csrf_token %}
+        {% for valor, etiqueta in emojis %}
+        <button class="boton secundario pequeno" type="submit" name="emoji" value="{{ valor }}">{{ valor }} {{ etiqueta }}</button>
+        {% endfor %}
+    </form>
+    <div style="margin-top:6px; font-size:0.85rem; color:#555;">
+        {% for r in post.reacciones.all %}{{ r.emoji }} {% endfor %}
+    </div>
+</div>
+{% empty %}
+<p style="color:#555;">Todavía no hay publicaciones. ¡Sé la primera!</p>
+{% endfor %}
+
+{% endblock %}

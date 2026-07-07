@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% block titulo %}Nueva dieta{% endblock %}
+{% block contenido %}
+
+<div class="tarjeta">
+    <h1>Nueva dieta</h1>
+    <p style="color:#555;">Como administrador, la dieta que crees aquí quedará visible de inmediato para toda la comunidad.</p>
+
+    <form method="post">
+        {% csrf_token %}
+
+        <h3>Datos de la dieta</h3>
+        {% for campo in form %}
+        <p>
+            <label>{{ campo.label }}</label>
+            {{ campo }}
+            {% if campo.help_text %}<div class="ayuda-campo">{{ campo.help_text }}</div>{% endif %}
+            {{ campo.errors }}
+        </p>
+        {% endfor %}
+
+        <h3>Menú del día</h3>
+        <p style="color:#555; margin-top:-6px;">Agrega las comidas en el orden en que se deben tomar. Deja vacías las filas que no uses.</p>
+        {{ formset.management_form }}
+        {% for f in formset %}
+        <div class="tarjeta" style="background:var(--gris-claro); padding:14px; margin-bottom:10px;">
+            {% for hidden in f.hidden_fields %}{{ hidden }}{% endfor %}
+            <div class="grid-2">
+                <p><label>Comida</label>{{ f.comida }}{{ f.comida.errors }}</p>
+                <p><label>Orden</label>{{ f.orden }}{{ f.orden.errors }}</p>
+            </div>
+            {% if f.instance.pk %}
+            <p>{{ f.DELETE }} <label style="display:inline; font-weight:400;">Eliminar esta comida</label></p>
+            {% endif %}
+        </div>
+        {% endfor %}
+
+        <button class="boton" type="submit">Guardar dieta</button>
+        <a class="boton secundario" href="{% url 'dietas:dietas_lista' %}">Cancelar</a>
+    </form>
+</div>
+
+{% endblock %}
