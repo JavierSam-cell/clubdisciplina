@@ -5,28 +5,45 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>{% block titulo %}Proyecto Disciplina{% endblock %}</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🔥</text></svg>">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+
 <style>
     :root {
-        --negro: #16181d;
+        --negro: #14161b;
+        --negro-2: #1c1f26;
         --gris-oscuro: #2a2d35;
         --gris: #6b7280;
         --gris-claro: #f4f4f6;
         --acento: #e8491d;
         --acento-oscuro: #c23c17;
+        --tape: #f2c14e;
         --exito: #1f9d55;
         --blanco: #ffffff;
         --borde: #e5e5ea;
+        --fuente-display: 'Anton', Impact, sans-serif;
+        --fuente-cuerpo: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+        --fuente-mono: 'Space Mono', 'Courier New', monospace;
+        --sombra: 0 2px 4px rgba(20,22,27,0.04), 0 8px 24px rgba(20,22,27,0.06);
+        --sombra-hover: 0 4px 8px rgba(20,22,27,0.06), 0 14px 32px rgba(20,22,27,0.10);
     }
     * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
     body {
         margin: 0;
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+        font-family: var(--fuente-cuerpo);
         background: var(--gris-claro);
         color: var(--negro);
-        line-height: 1.5;
+        line-height: 1.55;
+        -webkit-font-smoothing: antialiased;
     }
     a { color: inherit; text-decoration: none; }
+    :focus-visible { outline: 3px solid var(--tape); outline-offset: 2px; }
 
+    /* ============ NAV ============ */
     nav.principal {
         background: var(--negro);
         color: var(--blanco);
@@ -36,23 +53,38 @@
         justify-content: space-between;
         flex-wrap: wrap;
         gap: 10px;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        border-bottom: 5px solid transparent;
+        border-image: repeating-linear-gradient(-45deg, var(--tape) 0 14px, var(--negro-2) 14px 28px) 5;
     }
     nav.principal .marca {
-        font-weight: 800;
+        font-family: var(--fuente-display);
+        font-weight: 400;
         letter-spacing: 0.5px;
-        font-size: 1.1rem;
+        font-size: 1.35rem;
+        text-transform: uppercase;
+        display: flex;
+        align-items: baseline;
+        gap: 2px;
     }
     nav.principal .marca span { color: var(--acento); }
     nav.principal .links {
         display: flex;
+        align-items: center;
         gap: 4px;
         flex-wrap: wrap;
-        font-size: 0.92rem;
+        font-size: 0.86rem;
+        font-weight: 600;
     }
     nav.principal .links a {
         padding: 8px 12px;
         border-radius: 6px;
         color: #d8d9de;
+        text-transform: uppercase;
+        letter-spacing: 0.3px;
+        transition: background 0.15s ease, color 0.15s ease;
     }
     nav.principal .links a:hover { background: rgba(255,255,255,0.08); color: var(--blanco); }
     nav.principal .links a.salir { color: #ff8a75; }
@@ -63,28 +95,77 @@
         padding: 8px 12px;
         border-radius: 6px;
         color: #ff8a75;
-        font-size: 0.92rem;
+        font-size: 0.86rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.3px;
         font-family: inherit;
         cursor: pointer;
+        transition: background 0.15s ease;
     }
     nav.principal .links form.salir-form button:hover { background: rgba(255,255,255,0.08); }
 
+    .hamburguesa {
+        display: none;
+        background: none;
+        border: 1px solid rgba(255,255,255,0.25);
+        border-radius: 6px;
+        color: var(--blanco);
+        font-size: 1.1rem;
+        padding: 6px 10px;
+        cursor: pointer;
+    }
+
+    /* ============ FRANJA DE DISCIPLINA (imagen + frase rotativa) ============ */
+    .franja-disciplina {
+        position: relative;
+        overflow: hidden;
+        min-height: 46px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background:
+            linear-gradient(90deg, rgba(20,22,27,0.88), rgba(20,22,27,0.80)),
+            url('https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?auto=format&fit=crop&w=1600&q=60') center 30% / cover;
+        border-bottom: 2px solid var(--acento);
+    }
+    .franja-disciplina p {
+        margin: 0;
+        color: var(--blanco);
+        font-family: var(--fuente-mono);
+        font-weight: 700;
+        font-size: 0.78rem;
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+        text-align: center;
+        padding: 12px 16px;
+    }
+
+    /* ============ CONTENEDOR ============ */
     .contenedor {
         max-width: 880px;
         margin: 0 auto;
         padding: 28px 20px 60px;
+        min-height: 60vh;
     }
 
     .tarjeta {
         background: var(--blanco);
         border: 1px solid var(--borde);
-        border-radius: 12px;
+        border-left: 4px solid var(--negro);
+        border-radius: 10px;
         padding: 22px;
         margin-bottom: 18px;
+        box-shadow: var(--sombra);
+        transition: box-shadow 0.2s ease, transform 0.2s ease;
     }
+    .tarjeta:hover { box-shadow: var(--sombra-hover); }
 
-    h1, h2, h3 { line-height: 1.25; }
-    h1 { font-size: 1.7rem; }
+    h1, h2, h3 { line-height: 1.15; font-family: var(--fuente-display); font-weight: 400; text-transform: uppercase; letter-spacing: 0.4px; }
+    h1 { font-size: 1.9rem; }
+    h2 { font-size: 1.4rem; }
+    h3 { font-size: 1.1rem; }
+    p, li, td, th, label { font-family: var(--fuente-cuerpo); }
 
     .boton {
         display: inline-block;
@@ -94,28 +175,38 @@
         padding: 12px 22px;
         border-radius: 8px;
         font-weight: 700;
-        font-size: 0.98rem;
+        font-size: 0.92rem;
+        text-transform: uppercase;
+        letter-spacing: 0.4px;
         cursor: pointer;
         text-align: center;
+        transition: background 0.15s ease, transform 0.1s ease;
     }
-    .boton:hover { background: var(--acento-oscuro); }
+    .boton:hover { background: var(--acento-oscuro); transform: translateY(-1px); }
+    .boton:active { transform: translateY(0); }
     .boton.secundario {
         background: var(--blanco);
         color: var(--negro);
         border: 1px solid var(--borde);
     }
     .boton.secundario:hover { background: var(--gris-claro); }
-    .boton.pequeno { padding: 7px 12px; font-size: 0.85rem; }
+    .boton.pequeno { padding: 7px 12px; font-size: 0.78rem; }
 
     form p { margin: 0 0 14px; }
-    label { display: block; font-weight: 600; margin-bottom: 4px; font-size: 0.92rem; }
+    label { display: block; font-weight: 700; margin-bottom: 4px; font-size: 0.86rem; text-transform: uppercase; letter-spacing: 0.3px; color: var(--gris-oscuro); }
     input, select, textarea {
         width: 100%;
         padding: 10px 12px;
         border: 1px solid var(--borde);
         border-radius: 8px;
         font-size: 0.95rem;
-        font-family: inherit;
+        font-family: var(--fuente-cuerpo);
+        transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+    input:focus, select:focus, textarea:focus {
+        border-color: var(--acento);
+        box-shadow: 0 0 0 3px rgba(232,73,29,0.12);
+        outline: none;
     }
     input[type="checkbox"] { width: auto; }
     .ayuda-campo { color: var(--gris); font-size: 0.8rem; margin-top: 2px; }
@@ -127,9 +218,11 @@
         border-radius: 8px;
         margin-bottom: 8px;
         font-size: 0.92rem;
+        font-weight: 500;
+        border-left: 4px solid transparent;
     }
-    .mensajes li.success { background: #e4f7ea; color: #1f6b3a; }
-    .mensajes li.error { background: #fde8e6; color: #a12e21; }
+    .mensajes li.success { background: #e4f7ea; color: #1f6b3a; border-left-color: var(--exito); }
+    .mensajes li.error { background: #fde8e6; color: #a12e21; border-left-color: #c0392b; }
 
     .racha-badge {
         display: inline-flex;
@@ -140,32 +233,36 @@
         padding: 8px 16px;
         border-radius: 999px;
         font-weight: 700;
+        font-family: var(--fuente-mono);
     }
     .frase-destacada {
         background: var(--negro);
+        background-image: linear-gradient(120deg, rgba(232,73,29,0.18), rgba(20,22,27,0));
         color: var(--blanco);
         border-radius: 12px;
-        padding: 24px;
+        padding: 26px 24px;
         font-size: 1.15rem;
         font-weight: 600;
         text-align: center;
         margin-bottom: 18px;
+        border-left: 4px solid var(--tape);
     }
     .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
     .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
     @media (max-width: 600px) {
         .grid-2, .grid-3 { grid-template-columns: 1fr; }
     }
-    .metrica { text-align: center; padding: 14px; background: var(--gris-claro); border-radius: 10px; }
-    .metrica .valor { font-size: 1.6rem; font-weight: 800; }
-    .metrica .etiqueta { font-size: 0.8rem; color: var(--gris); }
+    .metrica { text-align: center; padding: 16px 14px; background: var(--gris-claro); border-radius: 10px; border-top: 3px solid var(--acento); }
+    .metrica .valor { font-size: 1.7rem; font-weight: 800; font-family: var(--fuente-mono); }
+    .metrica .etiqueta { font-size: 0.76rem; color: var(--gris); text-transform: uppercase; letter-spacing: 0.4px; }
 
     .chip {
         display: inline-block;
         padding: 5px 12px;
         border-radius: 999px;
         background: var(--gris-claro);
-        font-size: 0.82rem;
+        font-size: 0.8rem;
+        font-weight: 600;
         margin: 2px 4px 2px 0;
         border: 1px solid var(--borde);
     }
@@ -174,6 +271,112 @@
     table { width: 100%; border-collapse: collapse; }
     table th, table td { text-align: left; padding: 10px 8px; border-bottom: 1px solid var(--borde); }
     table tr:first-child td { font-weight: 700; }
+    table th { text-transform: uppercase; font-size: 0.76rem; letter-spacing: 0.3px; color: var(--gris); }
+
+    /* ============ PIE / FOOTER ============ */
+    footer.pie {
+        position: relative;
+        color: #cfd1d6;
+        padding: 40px 24px 24px;
+        background:
+            linear-gradient(rgba(20,22,27,0.94), rgba(20,22,27,0.97)),
+            url('https://images.unsplash.com/photo-1517836357463-d25dfeac3438?auto=format&fit=crop&w=1600&q=60') center / cover;
+    }
+    footer.pie .pie-contenido {
+        max-width: 880px;
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: 1.3fr 1fr 1fr;
+        gap: 24px;
+    }
+    footer.pie h4 {
+        color: var(--blanco);
+        font-family: var(--fuente-display);
+        font-weight: 400;
+        text-transform: uppercase;
+        font-size: 0.95rem;
+        letter-spacing: 0.5px;
+        margin: 0 0 10px;
+    }
+    footer.pie p { font-size: 0.85rem; margin: 0 0 8px; }
+    footer.pie ul { list-style: none; padding: 0; margin: 0; }
+    footer.pie ul li { margin-bottom: 6px; }
+    footer.pie ul li a { font-size: 0.85rem; color: #cfd1d6; transition: color 0.15s ease; }
+    footer.pie ul li a:hover { color: var(--tape); }
+    footer.pie .pie-legal {
+        max-width: 880px;
+        margin: 28px auto 0;
+        padding-top: 18px;
+        border-top: 1px solid rgba(255,255,255,0.1);
+        font-size: 0.76rem;
+        color: var(--gris);
+        display: flex;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+    @media (max-width: 700px) {
+        footer.pie .pie-contenido { grid-template-columns: 1fr; }
+    }
+
+    /* ============ RESPONSIVE NAV ============ */
+    @media (max-width: 900px) {
+        .hamburguesa { display: inline-block; }
+        nav.principal .links {
+            display: none;
+            width: 100%;
+            flex-direction: column;
+            align-items: stretch;
+            background: var(--negro-2);
+            border-radius: 8px;
+            padding: 8px;
+            margin-top: 6px;
+        }
+        nav.principal .links.abierto { display: flex; }
+        nav.principal .links a, nav.principal .links form.salir-form button { text-align: left; width: 100%; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        html { scroll-behavior: auto; }
+        .tarjeta, .boton, input, select, textarea { transition: none; }
+    }
+
+    /* ======================================================================
+       CAPA DE ANULACIÓN GLOBAL (usa !important)
+       ----------------------------------------------------------------------
+       Estas reglas garantizan que el nuevo diseño se imponga en TODO el
+       sistema aunque alguna plantilla vieja traiga estilos en línea o CSS
+       propio (igual que un theme de WordPress). Solo se toca este archivo;
+       no hace falta editar plantilla por plantilla.
+       ====================================================================== */
+    body, p, li, td, th, label, input, select, textarea, button {
+        font-family: var(--fuente-cuerpo) !important;
+    }
+    h1, h2, h3, h4, h5, h6 {
+        font-family: var(--fuente-display) !important;
+        text-transform: uppercase !important;
+    }
+    .tarjeta, div.tarjeta {
+        background: var(--blanco) !important;
+        border-radius: 10px !important;
+        box-shadow: var(--sombra) !important;
+        border-left: 4px solid var(--negro) !important;
+    }
+    a.boton, button.boton, input[type="submit"], .boton {
+        background: var(--acento) !important;
+        color: var(--blanco) !important;
+        border: none !important;
+        border-radius: 8px !important;
+        text-transform: uppercase !important;
+        font-weight: 700 !important;
+    }
+    a.boton.secundario, button.boton.secundario, .boton.secundario {
+        background: var(--blanco) !important;
+        color: var(--negro) !important;
+        border: 1px solid var(--borde) !important;
+    }
+    table { border-collapse: collapse !important; }
+    body { background: var(--gris-claro) !important; }
 </style>
 </head>
 <body>
@@ -182,7 +385,8 @@
     <a class="marca" href="{% if user.is_authenticated %}{% url 'tracking:dashboard' %}{% else %}{% url 'accounts:landing' %}{% endif %}">
         PROYECTO<span>DISCIPLINA</span>
     </a>
-    <div class="links">
+    <button type="button" class="hamburguesa" id="btn-menu" aria-expanded="false" aria-controls="links-nav">☰ Menú</button>
+    <div class="links" id="links-nav">
         {% if user.is_authenticated %}
             <a href="{% url 'tracking:dashboard' %}">Dashboard</a>
             <a href="{% url 'tracking:fotos_progreso' %}">Fotos de progreso</a>
@@ -208,6 +412,10 @@
     </div>
 </nav>
 
+<div class="franja-disciplina">
+    <p id="frase-ticker">LA DISCIPLINA VENCE A LA MOTIVACIÓN</p>
+</div>
+
 <div class="contenedor">
     {% if messages %}
     <ul class="mensajes">
@@ -219,6 +427,69 @@
 
     {% block contenido %}{% endblock %}
 </div>
+
+<footer class="pie">
+    <div class="pie-contenido">
+        <div>
+            <h4>Proyecto Disciplina</h4>
+            <p>Sin excusas, sin atajos. Rutinas, dietas y comunidad para construir el hábito día tras día.</p>
+        </div>
+        <div>
+            <h4>Entrenamiento</h4>
+            <ul>
+                <li><a href="{% url 'rutinas:rutinas_lista' %}">Rutinas</a></li>
+                <li><a href="{% url 'dietas:dietas_lista' %}">Dietas</a></li>
+                <li><a href="{% url 'tracking:fotos_progreso' %}">Fotos de progreso</a></li>
+            </ul>
+        </div>
+        <div>
+            <h4>Comunidad</h4>
+            <ul>
+                <li><a href="{% url 'community:feed' %}">Feed</a></li>
+                <li><a href="{% url 'community:recetas_lista' %}">Recetas</a></li>
+                <li><a href="{% url 'community:ranking' %}">Ranking</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="pie-legal">
+        <span>© {% now "Y" %} Proyecto Disciplina</span>
+        <span>Hecho para los que no fallan a la cita con ellos mismos.</span>
+    </div>
+</footer>
+
+<script>
+    (function () {
+        var btn = document.getElementById('btn-menu');
+        var links = document.getElementById('links-nav');
+        if (btn && links) {
+            btn.addEventListener('click', function () {
+                var abierto = links.classList.toggle('abierto');
+                btn.setAttribute('aria-expanded', abierto ? 'true' : 'false');
+            });
+        }
+
+        var frases = [
+            'LA DISCIPLINA VENCE A LA MOTIVACIÓN',
+            'UN DÍA MÁS. UN PASO MÁS.',
+            'SIN EXCUSAS. SOLO RESULTADOS.',
+            'TU FUTURO SE CONSTRUYE HOY'
+        ];
+        var ticker = document.getElementById('frase-ticker');
+        var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        if (ticker && !reduceMotion && frases.length > 1) {
+            var i = 0;
+            setInterval(function () {
+                i = (i + 1) % frases.length;
+                ticker.style.opacity = 0;
+                setTimeout(function () {
+                    ticker.textContent = frases[i];
+                    ticker.style.opacity = 1;
+                }, 250);
+            }, 4500);
+            ticker.style.transition = 'opacity 0.25s ease';
+        }
+    })();
+</script>
 
 </body>
 </html>
